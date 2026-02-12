@@ -218,30 +218,3 @@ app.get('/admin/responses', authMiddleware, async (req, res) => {
 
 // ===== Export the API =====
 export const api = functions.https.onRequest(app);
-
-// ===== EMAIL WORKER (runs periodically) =====
-export const processEmailQueue = functions.pubsub
-  .schedule('every 1 minutes')
-  .onRun(async (context) => {
-    const pendingEmails = await db
-      .collection('emailQueue')
-      .where('status', '==', 'pending')
-      .limit(10)
-      .get();
-
-    for (const doc of pendingEmails.docs) {
-      const data = doc.data();
-      try {
-        // TODO: Send email via SendGrid or Nodemailer
-        console.log(`Email sent to ${data.email} with protocol ${data.responseId}`);
-        
-        await doc.ref.update({
-          status: 'sent',
-          sentAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
-      } catch (error) {
-        console.error(`Error sending email to ${data.email}:`, error);
-        await doc.ref.update({ status: 'failed', error: String(error) });
-      }
-    }
-  });
