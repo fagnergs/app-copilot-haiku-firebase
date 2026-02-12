@@ -1,0 +1,15 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "responses",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
