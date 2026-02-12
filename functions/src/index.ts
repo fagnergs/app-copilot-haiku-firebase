@@ -73,14 +73,14 @@ app.post('/submit', async (req, res) => {
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.json({
+    return res.json({
       success: true,
       protocolNumber: responseRef.id,
       message: 'Respostas registradas com sucesso!',
     });
   } catch (error: any) {
     console.error('Error:', error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message || 'Erro ao processar respostas',
     });
@@ -100,20 +100,20 @@ app.post('/login', async (req, res) => {
         { expiresIn: '24h' }
       );
 
-      res.json({
+      return res.json({
         success: true,
         token,
         email,
         message: 'Autenticado com sucesso!',
       });
     } else {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: 'Email ou senha inválidos',
       });
     }
   } catch (error: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message || 'Erro na autenticação',
     });
@@ -166,7 +166,7 @@ app.get('/admin/analytics', authMiddleware, async (req, res) => {
 
     const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-    res.json({
+    return res.json({
       totalResponses: responses.length,
       averageSatisfaction: avg([...q1Values, ...q2Values, ...q3Values]),
       questionStats: [
@@ -178,7 +178,7 @@ app.get('/admin/analytics', authMiddleware, async (req, res) => {
     });
   } catch (error: any) {
     console.error('Error:', error);
-    res.status(500).json({ message: 'Erro ao obter analytics' });
+    return res.status(500).json({ message: 'Erro ao obter analytics' });
   }
 });
 
@@ -204,7 +204,7 @@ app.get('/admin/responses', authMiddleware, async (req, res) => {
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
     }));
 
-    res.json({
+    return res.json({
       total: countSnap.data().count,
       page,
       limit,
@@ -212,7 +212,7 @@ app.get('/admin/responses', authMiddleware, async (req, res) => {
     });
   } catch (error: any) {
     console.error('Error:', error);
-    res.status(500).json({ message: 'Erro ao obter respostas' });
+    return res.status(500).json({ message: 'Erro ao obter respostas' });
   }
 });
 
