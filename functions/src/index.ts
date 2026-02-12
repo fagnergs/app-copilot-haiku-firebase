@@ -133,7 +133,7 @@ const authMiddleware = (req: any, res: any, next: any) => {
     req.admin = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token expirado ou inválido' });
+    return res.status(401).json({ message: 'Token expirado ou inválido' });
   }
 };
 
